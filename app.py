@@ -13,7 +13,7 @@ Space Repetition System SQL Practice
 option = st.selectbox(
     "What would you like to review",
     ('Joins', 'GroupBy','Windows Functions'),
-    Index=None,
+    index=None,
     placeholder="Select a theme"
 )
 
