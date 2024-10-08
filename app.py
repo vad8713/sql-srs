@@ -11,14 +11,17 @@ SQL SRS
 Space Repetition System SQL Practice
 """)
 
-option = st.selectbox(
-    "What would you like to review",
-    ('Joins', 'GroupBy','Windows Functions'),
-    index=None,
-    placeholder="Select a theme"
-)
 
-st.write("You selected: ",option)
+with st.sidebar:
+
+    option = st.selectbox(
+        "What would you like to review",
+        ('Joins', 'GroupBy','Windows Functions'),
+        index=None,
+        placeholder="Select a theme"
+    )
+
+    st.write("You selected: ",option)
 
 csv = '''
 beverage,price
