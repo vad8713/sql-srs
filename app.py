@@ -1,66 +1,76 @@
+## pylint: disable=missing-module-docstring
 import io
-from cProfile import label
 
-import streamlit as st
-import pandas as pd
 import duckdb
-from pyarrow import table
+import pandas as pd
+import streamlit as st
 
-st.write("""
+st.write(
+    """
 SQL SRS
 Space Repetition System SQL Practice
-""")
-
+"""
+)
 
 with st.sidebar:
 
     option = st.selectbox(
         "What would you like to review",
-        ('Joins', 'GroupBy','Windows Functions'),
+        ("Joins", "GroupBy", "Windows Functions"),
         index=None,
-        placeholder="Select a theme"
+        placeholder="Select a theme",
     )
 
-    st.write("You selected: ",option)
+    st.write("You selected: ", option)
 
-csv = '''
+CSV = """
 beverage,price
 orange juice,2.5
 Expresso,2
 Tea,3
-'''
-beverages = pd.read_csv(io.StringIO(csv))
+"""
+beverages = pd.read_csv(io.StringIO(CSV))
 
-csv2 = '''
+CSV2 = """
 food_item, food_price
 cookie juice,2.5
 bread with chocolate,2
 muffin, 3
-'''
-food_items = pd.read_csv(io.StringIO(csv2))
+"""
+food_items = pd.read_csv(io.StringIO(CSV2))
 
-answer = """
+ANSWER_STRING = """
 SELECT * FROM beverages
 CROSS JOIN food_items 
 """
 
-solution = duckdb.sql(answer).df()
+solution_df = duckdb.sql(ANSWER_STRING).df()
 st.header("Enter your code:")
-sql_query = st.text_area(label='Enter an SQL request',key="user_input")
+sql_query = st.text_area(label="Enter an SQL request", key="user_input")
 if sql_query:
     result = duckdb.sql(sql_query).df()
     st.dataframe(result)
 
+    if solution_df.shape[0] != result.shape[0]:
+        st.write(
+            f"Result has {solution_df.shape[0] - result.shape[0]} differences with the solution_df"
+        )
 
-tab2,tab3 = st.tabs(["Tables","Solution"])
+    try:
+        # set datframes columns in the same order
+        result = result[solution_df.columns]
+        st.dataframe(result.compare(solution_df))
+    except KeyError as e:
+        st.write("Some columns are missing")
+
+tab2, tab3 = st.tabs(["Tables", "Solution"])
 with tab2:
-    st.write('Table beverages')
+    st.write("Table beverages")
     st.dataframe(beverages)
-    st.write('Table food_items')
+    st.write("Table food_items")
     st.dataframe(food_items)
-    st.write('Expected')
-    st.dataframe(solution)
+    st.write("Expected")
+    st.dataframe(solution_df)
 
 with tab3:
-    st.write(answer)
-
+    st.write(ANSWER_STRING)
