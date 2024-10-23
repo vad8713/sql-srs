@@ -28,10 +28,10 @@ beverages = pd.read_csv(io.StringIO(CSV))
 con.execute("CREATE TABLE IF NOT EXISTS beverages AS SELECT * FROM beverages")
 
 CSV2 = """
-food_item, food_price
-cookie juice,2.5
+food_item,food_price
+cookie,2.5
 bread with chocolate,2
-muffin, 3
+muffin,3
 """
 food_items = pd.read_csv(io.StringIO(CSV2))
 con.execute("CREATE TABLE IF NOT EXISTS food_items AS SELECT * FROM food_items")
