@@ -1,6 +1,6 @@
 ## pylint: disable=missing-module-docstring
 import io
-
+import ast
 import duckdb
 import pandas as pd
 import streamlit as st
@@ -27,16 +27,12 @@ with st.sidebar:
     exercise = con.execute(f"SELECT * FROM memory_state WHERE theme = '{theme}' ").df()
     st.write(exercise)
 
-# ANSWER_STRING = """
-# SELECT * FROM beverages
-# CROSS JOIN food_items
-# """
 # solution_df = duckdb.sql(ANSWER_STRING).df()
 
 st.header("Enter your code:")
 sql_query = st.text_area(label="Enter an SQL request", key="user_input")
 if sql_query:
-    result = duckdb.sql(sql_query).df()
+    result = con.execute(sql_query).df()
     st.dataframe(result)
 
 #     if solution_df.shape[0] != result.shape[0]:
@@ -50,15 +46,16 @@ if sql_query:
 #         st.dataframe(result.compare(solution_df))
 #     except KeyError as e:
 #         st.write("Some columns are missing")
-#
-# tab2, tab3 = st.tabs(["Tables", "Solution"])
-# with tab2:
-#     st.write("Table beverages")
-#     st.dataframe(beverages)
-#     st.write("Table food_items")
-#     st.dataframe(food_items)
-#     st.write("Expected")
-#     st.dataframe(solution_df)
-#
-# with tab3:
-#     st.write(ANSWER_STRING)
+
+tab2, tab3 = st.tabs(["Tables", "Solution"])
+with tab2:
+    exercise_tables = ast.literal_eval(exercise.loc[0,"tables"])
+    for table in exercise_tables:
+        st.write("Table ",table)
+        table_df = con.execute(f"SELECT * FROM {table}").df()
+        st.dataframe(table_df)
+with tab3:
+     exercise_name = exercise.loc[0,"exercise_name"]
+     with open(f"Answers/{exercise_name}","r") as f:
+         answer = f.read()
+     st.write(answer)
