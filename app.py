@@ -25,7 +25,7 @@ with st.sidebar:
     st.write("You selected" ,theme)
 
     exercise = con.execute(f"SELECT * FROM memory_state WHERE theme = '{theme}' ").df()
-    st.write(exercise)
+#    st.write(exercise)
 
     exercise_name = exercise.loc[0, "exercise_name"]
     with open(f"Answers/{exercise_name}.sql", "r") as f:
@@ -44,7 +44,7 @@ if sql_query:
         )
 
     try:
-        # set datframes columns in the same order
+        # set dataframes columns in the same order
         result = result[solution_df.columns]
         st.dataframe(result.compare(solution_df))
     except KeyError as e:
@@ -58,4 +58,4 @@ with tab2:
         table_df = con.execute(f"SELECT * FROM {table}").df()
         st.dataframe(table_df)
 with tab3:
-     st.write(answer)
+     st.text(answer)
