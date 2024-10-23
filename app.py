@@ -27,7 +27,10 @@ with st.sidebar:
     exercise = con.execute(f"SELECT * FROM memory_state WHERE theme = '{theme}' ").df()
     st.write(exercise)
 
-# solution_df = duckdb.sql(ANSWER_STRING).df()
+    exercise_name = exercise.loc[0, "exercise_name"]
+    with open(f"Answers/{exercise_name}.sql", "r") as f:
+        answer = f.read()
+    solution_df = con.execute(answer).df()
 
 st.header("Enter your code:")
 sql_query = st.text_area(label="Enter an SQL request", key="user_input")
@@ -35,17 +38,17 @@ if sql_query:
     result = con.execute(sql_query).df()
     st.dataframe(result)
 
-#     if solution_df.shape[0] != result.shape[0]:
-#         st.write(
-#             f"Result has {solution_df.shape[0] - result.shape[0]} differences with the solution_df"
-#         )
-#
-#     try:
-#         # set datframes columns in the same order
-#         result = result[solution_df.columns]
-#         st.dataframe(result.compare(solution_df))
-#     except KeyError as e:
-#         st.write("Some columns are missing")
+    if solution_df.shape[0] != result.shape[0]:
+        st.write(
+            f"Result has {solution_df.shape[0] - result.shape[0]} differences with the solution_df"
+        )
+
+    try:
+        # set datframes columns in the same order
+        result = result[solution_df.columns]
+        st.dataframe(result.compare(solution_df))
+    except KeyError as e:
+        st.write("Some columns are missing")
 
 tab2, tab3 = st.tabs(["Tables", "Solution"])
 with tab2:
@@ -55,7 +58,4 @@ with tab2:
         table_df = con.execute(f"SELECT * FROM {table}").df()
         st.dataframe(table_df)
 with tab3:
-     exercise_name = exercise.loc[0,"exercise_name"]
-     with open(f"Answers/{exercise_name}","r") as f:
-         answer = f.read()
      st.write(answer)
