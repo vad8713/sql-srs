@@ -1,18 +1,21 @@
 ## pylint: disable=missing-module-docstring
+## pylint: disable=exec-used
+## pylint: disable=consider-using-with
+
 import os
 import logging
 import duckdb
-import pandas as pd
+
+# import pandas as pd
 import streamlit as st
 
 if "Data" not in os.listdir():
     logging.error(os.listdir())
     logging.error("Creating Data folder")
-    print("Creating Data folder")
     os.mkdir("Data")
 
 if "exercises_sql_tables.db" not in os.listdir("Data"):
-    exec(open("init_db.py").read())
+    exec(open("init_db.py", "r", encoding="utf-8").read())
 
 con = duckdb.connect("Data/exercises_sql_tables.db", read_only=False)
 
@@ -42,7 +45,7 @@ with st.sidebar:
     #    st.write(exercise)
 
     exercise_name = exercise.loc[0, "exercise_name"]
-    with open(f"Answers/{exercise_name}.sql", "r") as f:
+    with open(f"Answers/{exercise_name}.sql", "r", encoding="utf-8").read() as f:
         answer = f.read()
     solution_df = con.execute(answer).df()
 

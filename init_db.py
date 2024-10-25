@@ -1,6 +1,8 @@
+## pylint: disable=missing-module-docstring
+import io
 import pandas as pd
 import duckdb
-import io
+
 
 con = duckdb.connect("Data/exercises_sql_tables.db", read_only=False)
 
