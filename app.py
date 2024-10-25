@@ -35,16 +35,21 @@ with st.sidebar:
         index=None,
         placeholder="Select a theme",
     )
-    st.write("You selected", theme)
+
+    if theme:
+        st.write("You selected", theme)
+        select_theme_string = f"SELECT * FROM memory_state WHERE theme = '{theme}'"
+    else:
+        select_theme_string = "SELECT * FROM memory_state"
 
     exercise = (
-        con.execute(f"SELECT * FROM memory_state WHERE theme = '{theme}' ")
+        con.execute(select_theme_string)
         .df()
         .sort_values("Last_reviewed")
         .reset_index()
     )
-    #    st.write(exercise)
 
+    st.write(exercise)
     exercise_name = exercise.loc[0, "exercise_name"]
     with open(f"Answers/{exercise_name}.sql", encoding="utf-8") as f:
         answer = f.read()
