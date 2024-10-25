@@ -4,20 +4,20 @@ import io
 
 con = duckdb.connect("Data/exercises_sql_tables.db", read_only=False)
 
-#---------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------
 # EXERCISES LIST
-#---------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------
 data = {
-    "theme" : ["Cross_joins","Cross_joins"],
-    "exercise_name": ["beverages_and_food","sizes_and_trademarks"],
-    "tables": [["beverages","food_items"], ["sizes","trademarks"] ],
-    "Last_reviewed": ["1980-01-01","1970-01-01"]
+    "theme": ["Cross_joins", "Cross_joins"],
+    "exercise_name": ["beverages_and_food", "sizes_and_trademarks"],
+    "tables": [["beverages", "food_items"], ["sizes", "trademarks"]],
+    "Last_reviewed": ["1980-01-01", "1970-01-01"],
 }
 memory_state_df = pd.DataFrame(data)
 con.execute("CREATE TABLE IF NOT EXISTS memory_state AS SELECT * FROM memory_state_df")
-#---------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------
 # CROSS JOIN EXERCISES
-#---------------------------------------------------------------------------------
+# ---------------------------------------------------------------------------------
 CSV = """
 beverage,price
 orange juice,2.5

@@ -31,10 +31,15 @@ with st.sidebar:
         index=None,
         placeholder="Select a theme",
     )
-    st.write("You selected" ,theme)
+    st.write("You selected", theme)
 
-    exercise = con.execute(f"SELECT * FROM memory_state WHERE theme = '{theme}' ").df().sort_values("Last_reviewed").reset_index()
-#    st.write(exercise)
+    exercise = (
+        con.execute(f"SELECT * FROM memory_state WHERE theme = '{theme}' ")
+        .df()
+        .sort_values("Last_reviewed")
+        .reset_index()
+    )
+    #    st.write(exercise)
 
     exercise_name = exercise.loc[0, "exercise_name"]
     with open(f"Answers/{exercise_name}.sql", "r") as f:
@@ -61,10 +66,10 @@ if sql_query:
 
 tab2, tab3 = st.tabs(["Tables", "Solution"])
 with tab2:
-    exercise_tables = exercise.loc[0,"tables"]
+    exercise_tables = exercise.loc[0, "tables"]
     for table in exercise_tables:
-        st.write("Table ",table)
+        st.write("Table ", table)
         table_df = con.execute(f"SELECT * FROM {table}").df()
         st.dataframe(table_df)
 with tab3:
-     st.text(answer)
+    st.text(answer)
