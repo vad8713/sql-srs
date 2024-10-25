@@ -2,10 +2,10 @@
 ## pylint: disable=exec-used
 ## pylint: disable=consider-using-with
 
-import os
 import logging
-import duckdb
+import os
 
+import duckdb
 # import pandas as pd
 import streamlit as st
 
