@@ -29,9 +29,11 @@ Space Repetition System SQL Practice
 
 with st.sidebar:
 
+    availableThemes = con.execute("SELECT DISTINCT theme FROM memory_state").df()
+    themeLlist = availableThemes["theme"].tolist()
     theme = st.selectbox(
         "What would you like to review",
-        ("Cross_joins", "GroupBy", "Windows Functions"),
+        themeLlist,
         index=None,
         placeholder="Select a theme",
     )
