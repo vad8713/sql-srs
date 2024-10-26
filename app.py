@@ -34,6 +34,8 @@ def check_query(user_query: str) -> None:
         # set dataframes columns in the same order
         result = result[solution_df.columns]
         st.dataframe(result.compare(solution_df))
+        if result.compare(solution_df).shape == (0, 0):
+            st.write("Correct")
     except KeyError:
         st.write("Some columns are missing")
 
