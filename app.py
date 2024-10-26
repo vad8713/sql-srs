@@ -18,6 +18,28 @@ if "exercises_sql_tables.db" not in os.listdir("Data"):
     ## pylint: disable-next=consider-using-with
     exec(open("init_db.py", encoding="utf-8").read())
 
+
+def check_query(user_query: str) -> None:
+    """
+    Check user query string by comparison of
+    1 : columns
+    2 : values
+    :param user_query: A sting containing the query inserted by the user
+    """
+    result = con.execute(user_query).df()
+    st.dataframe(result)
+    if solution_df.shape[0] != result.shape[0]:
+        st.write(
+            f"Result has {solution_df.shape[0] - result.shape[0]} differences with the solution_df"
+        )
+    try:
+        # set dataframes columns in the same order
+        result = result[solution_df.columns]
+        st.dataframe(result.compare(solution_df))
+    except KeyError:
+        st.write("Some columns are missing")
+
+
 con = duckdb.connect("Data/exercises_sql_tables.db", read_only=False)
 
 st.write(
@@ -55,22 +77,11 @@ with st.sidebar:
     solution_df = con.execute(answer).df()
 
 st.header("Enter your code:")
+
+
 sql_query = st.text_area(label="Enter an SQL request", key="user_input")
 if sql_query:
-    result = con.execute(sql_query).df()
-    st.dataframe(result)
-
-    if solution_df.shape[0] != result.shape[0]:
-        st.write(
-            f"Result has {solution_df.shape[0] - result.shape[0]} differences with the solution_df"
-        )
-
-    try:
-        # set dataframes columns in the same order
-        result = result[solution_df.columns]
-        st.dataframe(result.compare(solution_df))
-    except KeyError as e:
-        st.write("Some columns are missing")
+    check_query(sql_query)
 
 tab2, tab3 = st.tabs(["Tables", "Solution"])
 with tab2:
