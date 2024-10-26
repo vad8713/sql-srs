@@ -4,6 +4,8 @@
 import logging
 import os
 
+from datetime import date, timedelta
+
 import duckdb
 
 # import pandas as pd
@@ -78,8 +80,18 @@ with st.sidebar:
 
 st.header("Enter your code:")
 
-
 sql_query = st.text_area(label="Enter an SQL request", key="user_input")
+
+if st.button("Reset"):
+    con.execute("UPDATE memory_state SET Last_reviewed = '1970-01-01'")
+    st.rerun()
+
+for n_days in [2, 7, 21]:
+    if st.button(f"Repeat in {n_days} Days"):
+        nextLastReviewed = date.today() + timedelta(days=n_days)
+        con.execute(f"UPDATE memory_state SET Last_reviewed = '{nextLastReviewed}' WHERE exercise_name = '{exercise_name}'")
+        st.rerun()
+
 if sql_query:
     check_query(sql_query)
 
