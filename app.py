@@ -30,10 +30,6 @@ def check_query(user_query: str) -> None:
     """
     result = con.execute(user_query).df()
     st.dataframe(result)
-    if solution_df.shape[0] != result.shape[0]:
-        st.write(
-            f"Result has {solution_df.shape[0] - result.shape[0]} differences with the solution_df"
-        )
     try:
         # set dataframes columns in the same order
         result = result[solution_df.columns]
@@ -41,6 +37,11 @@ def check_query(user_query: str) -> None:
     except KeyError:
         st.write("Some columns are missing")
 
+    n_lines_differences = result.shape[0] - solution_df.shape[0]
+    if n_lines_differences != 0:
+        st.write(
+            f"Result has {n_lines_differences} differences with the solution_df"
+        )
 
 con = duckdb.connect("Data/exercises_sql_tables.db", read_only=False)
 
